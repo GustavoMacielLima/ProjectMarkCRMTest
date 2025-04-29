@@ -1,5 +1,4 @@
 import {
-  IsDateString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -9,8 +8,6 @@ import {
   MinLength,
 } from 'class-validator';
 import { EmailExist } from '../validation/email-exist.validator';
-import { GenderEnum } from '../../../db/entities/user/enum/gender.enum';
-import { NacionalityEnum } from '../../../db/entities/user/enum/nacionality.enum';
 import { UserRole } from '../../../models/user.model';
 
 export class CreateUserDto {
@@ -48,26 +45,6 @@ export class CreateUserDto {
     message: 'INVALID_PASSWORD',
   })
   password: string;
-
-  @IsOptional()
-  @IsString({ message: 'INVALID_SOCIAL_NAME' })
-  socialName: string;
-
-  @IsNotEmpty({ message: 'REQUIRED_GENDER' })
-  @IsEnum(GenderEnum, { message: 'INVALID_GENDER' })
-  gender: GenderEnum;
-
-  @IsNotEmpty({ message: 'REQUIRED_BIRTHDAY' })
-  @IsDateString(undefined, { message: 'INVALID_DATE' })
-  birthday: string;
-
-  @IsNotEmpty({ message: 'REQUIRED_PRACTICE_BEGIN' })
-  @IsDateString(undefined, { message: 'INVALID_DATE' })
-  practiceBegin: string;
-
-  @IsNotEmpty({ message: 'REQUIRED_NATIONALITY' })
-  @IsEnum(NacionalityEnum, { message: 'INVALID_NATIONALITY' })
-  nationality: NacionalityEnum;
 
   @IsOptional()
   @IsNotEmpty({ message: 'REQUIRED_COMPANY_ID' })

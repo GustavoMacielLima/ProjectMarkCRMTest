@@ -10,6 +10,7 @@ import {
   Req,
   HttpStatus,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { UserApplication } from 'src/application/user/user.application';
 import { User } from 'src/models/user.model';
@@ -54,6 +55,19 @@ export class UserController {
     return this.userApplication.update(
       requestUser.user.internalSub,
       updateUserDto,
+    );
+  }
+
+  @Put(':id/validate')
+  @UseGuards(AuthGuard)
+  async validate(
+    @Param('id') id: string,
+    @Body() validateCode: string,
+    @Req() requestUser: RequestUser,
+  ) {
+    return this.userApplication.validate(
+      requestUser.user.internalSub,
+      validateCode,
     );
   }
 

@@ -1,6 +1,0 @@
-export enum CompetitionLevelEnum {
-  ESTATUAL = 'ESTATUAL',
-  NATIONAL = 'NATIONAL',
-  INTERNATIONAL = 'INTERNATIONAL',
-  CONTINENTAL = 'CONTINENTAL',
-}

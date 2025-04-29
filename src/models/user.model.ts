@@ -91,6 +91,12 @@ export class User extends Model {
   })
   isActive: boolean;
 
+  @Column({
+    type: DataType.STRING(8),
+    allowNull: true,
+  })
+  verificationCode: string;
+
   @ForeignKey(() => Company)
   @Column({
     type: DataType.INTEGER,
@@ -120,4 +126,10 @@ export class User extends Model {
     allowNull: true,
   })
   deleteAt: Date;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  codeCreatedAt: Date;
 }
