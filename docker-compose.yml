@@ -11,6 +11,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - mailhog
     volumes:
       - .:/app
       - /app/node_modules
@@ -40,6 +41,16 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    networks:
+      - mgpix-network
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    restart: always
+    ports:
+      - "1025:1025" # Porta SMTP
+      - "8025:8025" # Interface web
     networks:
       - mgpix-network
 
