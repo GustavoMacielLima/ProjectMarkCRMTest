@@ -10,6 +10,18 @@ export const RepositoryAdapter = {
       provide: RepositoryProvider.USER,
       useValue: User,
     },
+    {
+      provide: RepositoryProvider.COMPANY,
+      useValue: Company,
+    },
+    {
+      provide: RepositoryProvider.CONTRACT,
+      useValue: Contract,
+    },
+    {
+      provide: RepositoryProvider.PDV,
+      useValue: Pdv,
+    },
   ],
 };
 

@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
 import { UserDomain } from './user/user.domain';
 import { RepositoryModule } from 'src/repository/repository.module';
+import { SessionService } from 'src/resources/services/session.service';
+import { CompanyDomain } from './company/company.domain';
+import { ContractDomain } from './contract/contract.domain';
+import { PdvDomain } from './pdv/pdv.domain';
 
 @Module({
   imports: [RepositoryModule],
-  providers: [UserDomain],
-  exports: [UserDomain],
+  providers: [
+    SessionService,
+    UserDomain,
+    CompanyDomain,
+    ContractDomain,
+    PdvDomain,
+  ],
+  exports: [UserDomain, CompanyDomain, ContractDomain, PdvDomain],
 })
 export class DomainModule {}

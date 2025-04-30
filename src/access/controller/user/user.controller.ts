@@ -41,7 +41,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id') id: string) {
     return this.userApplication.findOne(id);
   }
 
@@ -52,10 +52,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Req() requestUser: RequestUser,
   ) {
-    return this.userApplication.update(
-      requestUser.user.internalSub,
-      updateUserDto,
-    );
+    return this.userApplication.update(requestUser.user.sub, updateUserDto);
   }
 
   @Put(':id/validate')
@@ -65,15 +62,12 @@ export class UserController {
     @Body() validateCode: string,
     @Req() requestUser: RequestUser,
   ) {
-    return this.userApplication.validate(
-      requestUser.user.internalSub,
-      validateCode,
-    );
+    return this.userApplication.validate(requestUser.user.sub, validateCode);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id') id: string) {
     await this.userApplication.remove(id);
     return;
   }
