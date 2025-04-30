@@ -6,6 +6,9 @@ import { DomainModule } from 'src/domain/domain.module';
 import { AuthController } from './auth/auth.controller';
 import { UserController } from './user/user.controller';
 import { SessionService } from 'src/resources/services/session.service';
+import { PdvController } from './pdv/pdv.controller';
+import { ContractController } from './contract/contract.controller';
+import { CompanyController } from './company/company.controller';
 
 @Module({
   imports: [
@@ -23,7 +26,13 @@ import { SessionService } from 'src/resources/services/session.service';
     DomainModule,
   ],
   providers: [SessionService],
-  controllers: [AuthController, UserController],
+  controllers: [
+    AuthController,
+    UserController,
+    PdvController,
+    ContractController,
+    CompanyController,
+  ],
 })
 export class ControllerModule implements NestModule {
   configure(consumer: any) {

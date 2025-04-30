@@ -35,8 +35,8 @@ export class UserApplication {
     return users;
   }
 
-  async findOne(id: number): Promise<User> {
-    const user: User = await this.userDomain.findOne(id);
+  async findOne(id: string): Promise<User> {
+    const user: User = await this.userDomain.findByStringId(id);
     if (!user) {
       throw new NotFoundException('USER_NOT_FOUND');
     }
@@ -51,14 +51,14 @@ export class UserApplication {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
     Object.assign(user, updateUserDto);
-    this.userDomain.update(id, user);
+    this.userDomain.update(user.id, user);
     return user;
   }
 
-  async validate(id: number, validateCode: string): Promise<User> {
+  async validate(id: string, validateCode: string): Promise<User> {
     const user: User = await this.findOne(id);
 
     if (user.verificationCode !== validateCode) {
@@ -70,11 +70,11 @@ export class UserApplication {
     }
 
     user.isActive = true;
-    this.userDomain.update(id, user);
+    this.userDomain.update(user.id, user);
     return user;
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const user: User = await this.findOne(id);
     this.userDomain.remove(user.id);
   }
