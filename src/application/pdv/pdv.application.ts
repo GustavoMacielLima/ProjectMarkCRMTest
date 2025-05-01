@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PdvDomain } from 'src/domain/pdv/pdv.domain';
 import { Pdv } from 'src/models/pdv.model';
-import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
-import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
+import { CreatePdvDto } from 'src/modules/pdv/dto/create-pdv.dto';
+import { UpdatePdvDto } from 'src/modules/pdv/dto/update-pdv.dto';
 
 @Injectable()
 export class PdvApplication {
   constructor(private readonly pdvDomain: PdvDomain) {}
 
-  async create(createPdvDto: CreateUserDto): Promise<Pdv> {
+  async create(createPdvDto: CreatePdvDto): Promise<Pdv> {
     const newPdv: Pdv = new Pdv();
 
     Object.assign(newPdv, createPdvDto);
@@ -30,7 +30,7 @@ export class PdvApplication {
     return pdv;
   }
 
-  async update(id: string, updatePdvDto: UpdateUserDto): Promise<Pdv> {
+  async update(id: string, updatePdvDto: UpdatePdvDto): Promise<Pdv> {
     const pdv = await this.findOne(id);
     Object.assign(pdv, updatePdvDto);
     this.pdvDomain.update(pdv.id, pdv);

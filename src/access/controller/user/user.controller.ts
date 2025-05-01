@@ -28,21 +28,49 @@ export class UserController {
   async create(
     @Body() createUserDto: CreateUserDto,
     @Body('password', PasswordHash) passwordHash: string,
-  ) {
+  ): Promise<ListUserDto> {
     createUserDto.password = passwordHash;
     const newUser: User = await this.userApplication.create(createUserDto);
-    return new ListUserDto(newUser.id.toString(), newUser.name, newUser.email);
+    return new ListUserDto(
+      newUser.stringId,
+      newUser.name,
+      newUser.email,
+      newUser.phone,
+      newUser.role,
+      newUser.isActive,
+      newUser.identifier,
+    );
   }
 
   @Get()
-  async findAll() {
-    console.log('id');
-    return await this.userApplication.findAll();
+  async findAll(): Promise<ListUserDto[]> {
+    const users: User[] = await this.userApplication.findAll();
+    return users.map(
+      (user) =>
+        new ListUserDto(
+          user.stringId,
+          user.name,
+          user.email,
+          user.phone,
+          user.role,
+          user.isActive,
+          user.identifier,
+        ),
+    );
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.userApplication.findOne(id);
+  async findOne(@Param('id') id: string): Promise<ListUserDto> {
+    const user: User = await this.userApplication.findOne(id);
+    return new ListUserDto(
+      user.stringId,
+      user.name,
+      user.email,
+      user.phone,
+      user.role,
+      user.isActive,
+      user.identifier,
+    );
   }
 
   @Patch(':id')
@@ -51,23 +79,47 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @Req() requestUser: RequestUser,
-  ) {
-    return this.userApplication.update(requestUser.user.sub, updateUserDto);
+  ): Promise<ListUserDto> {
+    const user: User = await this.userApplication.update(
+      requestUser.user.sub,
+      updateUserDto,
+    );
+    return new ListUserDto(
+      user.stringId,
+      user.name,
+      user.email,
+      user.phone,
+      user.role,
+      user.isActive,
+      user.identifier,
+    );
   }
 
   @Put(':id/validate')
   @UseGuards(AuthGuard)
   async validate(
     @Param('id') id: string,
-    @Body() validateCode: string,
+    @Body('code') validateCode: string, // Supondo que o código seja enviado como { code: "value" }
     @Req() requestUser: RequestUser,
-  ) {
-    return this.userApplication.validate(requestUser.user.sub, validateCode);
+  ): Promise<ListUserDto> {
+    const user: User = await this.userApplication.validate(
+      requestUser.user.sub,
+      validateCode,
+    );
+    return new ListUserDto(
+      user.stringId,
+      user.name,
+      user.email,
+      user.phone,
+      user.role,
+      user.isActive,
+      user.identifier,
+    );
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<void> {
     await this.userApplication.remove(id);
     return;
   }

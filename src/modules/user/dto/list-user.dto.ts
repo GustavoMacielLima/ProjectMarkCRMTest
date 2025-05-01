@@ -3,5 +3,9 @@ export class ListUserDto {
     readonly id: string,
     readonly name: string,
     readonly email: string,
+    readonly phone: string,
+    readonly role: string,
+    readonly isActive: boolean,
+    readonly identifier: string,
   ) {}
 }
