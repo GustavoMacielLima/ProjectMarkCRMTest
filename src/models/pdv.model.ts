@@ -9,12 +9,12 @@ import {
 import { Company } from './company.model';
 import { Contract } from './contract.model';
 
-export enum Provider {
+export enum ProviderEnum {
   PAGSEGURO = 'pagseguro',
   MGPIX = 'mgpix',
 }
 
-export enum PdvStatus {
+export enum PdvStatusEnum {
   ACTIVE = 'active',
   CANCELED = 'canceled',
   BLOCKED = 'blocked',
@@ -42,18 +42,18 @@ export class Pdv extends Model {
   stringId: string;
 
   @Column({
-    type: DataType.ENUM(...Object.values(Provider)),
+    type: DataType.ENUM(...Object.values(ProviderEnum)),
     allowNull: false,
-    defaultValue: Provider.MGPIX,
+    defaultValue: ProviderEnum.MGPIX,
   })
-  provider: Provider;
+  provider: ProviderEnum;
 
   @Column({
-    type: DataType.ENUM(...Object.values(PdvStatus)),
+    type: DataType.ENUM(...Object.values(PdvStatusEnum)),
     allowNull: false,
-    defaultValue: PdvStatus.ACTIVE,
+    defaultValue: PdvStatusEnum.ACTIVE,
   })
-  status: PdvStatus;
+  status: PdvStatusEnum;
 
   @Column({
     type: DataType.STRING(255),

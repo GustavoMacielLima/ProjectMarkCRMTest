@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ContractDomain } from 'src/domain/contract/contract.domain';
 import { Contract } from 'src/models/contract.model';
-import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
-import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
+import { CreateContractDto } from 'src/modules/contract/dto/create-contract.dto';
+import { UpdateContractDto } from 'src/modules/contract/dto/update-contract.dto';
 
 @Injectable()
 export class ContractApplication {
   constructor(private readonly contractDomain: ContractDomain) {}
 
-  async create(createContractDto: CreateUserDto): Promise<Contract> {
+  async create(createContractDto: CreateContractDto): Promise<Contract> {
     const newContract: Contract = new Contract();
 
     Object.assign(newContract, createContractDto);
@@ -33,7 +33,7 @@ export class ContractApplication {
 
   async update(
     id: string,
-    updateContractDto: UpdateUserDto,
+    updateContractDto: UpdateContractDto,
   ): Promise<Contract> {
     const contract = await this.findOne(id);
     Object.assign(contract, updateContractDto);

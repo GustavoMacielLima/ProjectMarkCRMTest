@@ -8,12 +8,12 @@ import {
 } from 'sequelize-typescript';
 import { Company } from './company.model';
 
-export enum Provider {
+export enum ProviderEnum {
   PAGSEGURO = 'pagseguro',
   MGPIX = 'mgpix',
 }
 
-export enum PaymentIntervalDay {
+export enum PaymentIntervalDayEnum {
   DAILY = 'daily',
   WEEKLY = 'weekly',
   BIWEEKLY = 'biweekly',
@@ -42,11 +42,11 @@ export class Contract extends Model {
   stringId: string;
 
   @Column({
-    type: DataType.ENUM(...Object.values(Provider)),
+    type: DataType.ENUM(...Object.values(ProviderEnum)),
     allowNull: false,
-    defaultValue: Provider.MGPIX,
+    defaultValue: ProviderEnum.MGPIX,
   })
-  provider: Provider;
+  provider: ProviderEnum;
 
   @Column({
     type: DataType.DECIMAL(10, 2),
@@ -85,11 +85,11 @@ export class Contract extends Model {
   creditHighTax: number;
 
   @Column({
-    type: DataType.ENUM(...Object.values(PaymentIntervalDay)),
+    type: DataType.ENUM(...Object.values(PaymentIntervalDayEnum)),
     allowNull: false,
-    defaultValue: PaymentIntervalDay.MONTHLY,
+    defaultValue: PaymentIntervalDayEnum.MONTHLY,
   })
-  paymentIntervalDay: PaymentIntervalDay;
+  paymentIntervalDay: PaymentIntervalDayEnum;
 
   @Column({
     type: DataType.INTEGER,

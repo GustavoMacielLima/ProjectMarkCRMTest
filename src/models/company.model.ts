@@ -61,12 +61,6 @@ export class Company extends Model {
   email: string;
 
   @Column({
-    type: DataType.STRING(255),
-    allowNull: false,
-  })
-  password: string;
-
-  @Column({
     type: DataType.BOOLEAN,
     defaultValue: true,
   })
