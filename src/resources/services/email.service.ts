@@ -10,10 +10,12 @@ export class EmailService {
       host: process.env.EMAIL_HOST, // Substitua pelo host SMTP
       port: Number(process.env.EMAIL_PORT), // Porta SMTP
       secure: Number(process.env.EMAIL_PORT) === 465, // Use true para 465, false para outras portas
-      auth: {
-        user: process.env.EMAIL_USERNAME, // Substitua pelo seu e-mail
-        pass: process.env.EMAIL_PASSWORD, // Substitua pela sua senha
-      },
+      auth: process.env.EMAIL_USERNAME
+        ? {
+            user: process.env.EMAIL_USERNAME, // Substitua pelo seu e-mail
+            pass: process.env.EMAIL_PASSWORD, // Substitua pela sua senha
+          }
+        : undefined,
     } as nodemailer.TransportOptions);
   }
 

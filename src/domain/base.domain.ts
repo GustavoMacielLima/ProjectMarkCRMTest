@@ -3,6 +3,7 @@ import { WhereOptions } from 'sequelize';
 import { Model, Repository } from 'sequelize-typescript';
 import { User, UserRole } from 'src/models/user.model';
 import { SessionService } from 'src/resources/services/session.service';
+import { v4 as uuid } from 'uuid';
 
 export class BaseDomain<T extends Model> {
   constructor(
@@ -22,6 +23,7 @@ export class BaseDomain<T extends Model> {
 
     record.setDataValue('updatedAt', new Date());
     if (isNewRecord) {
+      record.setDataValue('stringId', uuid());
       record.setDataValue('createdAt', new Date());
     }
   }

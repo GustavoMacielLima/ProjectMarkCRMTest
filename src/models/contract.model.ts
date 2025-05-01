@@ -137,5 +137,5 @@ export class Contract extends Model {
     type: DataType.DATE,
     allowNull: true,
   })
-  deleteAt: Date;
+  deletedAt: Date;
 }

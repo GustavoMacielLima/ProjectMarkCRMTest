@@ -1,4 +1,4 @@
-import { Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { ApplicationModule } from 'src/application/application.module';
@@ -35,8 +35,15 @@ import { CompanyController } from './company/company.controller';
   ],
 })
 export class ControllerModule implements NestModule {
-  configure(consumer: any) {
+  configure(consumer: MiddlewareConsumer) {
     // Configure middleware if needed
-    consumer.apply().forRoutes('*');
+    consumer
+      .apply()
+      .forRoutes(
+        UserController,
+        PdvController,
+        ContractController,
+        CompanyController,
+      );
   }
 }

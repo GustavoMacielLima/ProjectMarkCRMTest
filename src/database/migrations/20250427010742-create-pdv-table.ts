@@ -58,7 +58,7 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW,
       },
-      deleteAt: {
+      deletedAt: {
         type: Sequelize.DATE, // Usar Sequelize.DATE para timestamps
         allowNull: true,
       },

@@ -16,15 +16,19 @@ export class UserApplication {
     const newUser: User = new User();
 
     Object.assign(newUser, createUserDto);
+
+    newUser.verificationCode =
+      this.verificationService.generateVerificationCode();
+    newUser.codeCreatedAt = new Date();
+    newUser.isActive = false;
     const createdUser: User = await this.userDomain.create(newUser);
 
     // Gerar e enviar o código de verificação
-    const verificationCode =
-      await this.verificationService.sendVerificationCode(createdUser.email);
+    await this.verificationService.sendVerificationCode(
+      createdUser.email,
+      newUser.verificationCode,
+    );
 
-    createdUser.verificationCode = verificationCode;
-    createdUser.codeCreatedAt = new Date();
-    createdUser.isActive = false;
     await this.userDomain.update(createdUser.id, createdUser);
 
     return createdUser;

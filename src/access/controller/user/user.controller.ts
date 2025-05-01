@@ -6,11 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Req,
   HttpStatus,
   HttpCode,
-  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UserApplication } from 'src/application/user/user.application';
 import { User } from 'src/models/user.model';
@@ -21,6 +20,7 @@ import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
 import { PasswordHash } from 'src/resources/pipes/password-hash.pipe';
 
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userApplication: UserApplication) {}
 
@@ -33,7 +33,7 @@ export class UserController {
     const newUser: User = await this.userApplication.create(createUserDto);
     return new ListUserDto(
       newUser.stringId,
-      newUser.name,
+      newUser.fullName,
       newUser.email,
       newUser.phone,
       newUser.role,
@@ -49,7 +49,7 @@ export class UserController {
       (user) =>
         new ListUserDto(
           user.stringId,
-          user.name,
+          user.fullName,
           user.email,
           user.phone,
           user.role,
@@ -64,7 +64,7 @@ export class UserController {
     const user: User = await this.userApplication.findOne(id);
     return new ListUserDto(
       user.stringId,
-      user.name,
+      user.fullName,
       user.email,
       user.phone,
       user.role,
@@ -74,7 +74,6 @@ export class UserController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -86,29 +85,7 @@ export class UserController {
     );
     return new ListUserDto(
       user.stringId,
-      user.name,
-      user.email,
-      user.phone,
-      user.role,
-      user.isActive,
-      user.identifier,
-    );
-  }
-
-  @Put(':id/validate')
-  @UseGuards(AuthGuard)
-  async validate(
-    @Param('id') id: string,
-    @Body('code') validateCode: string, // Supondo que o código seja enviado como { code: "value" }
-    @Req() requestUser: RequestUser,
-  ): Promise<ListUserDto> {
-    const user: User = await this.userApplication.validate(
-      requestUser.user.sub,
-      validateCode,
-    );
-    return new ListUserDto(
-      user.stringId,
-      user.name,
+      user.fullName,
       user.email,
       user.phone,
       user.role,
