@@ -125,7 +125,7 @@ export class User extends Model {
     type: DataType.DATE,
     allowNull: true,
   })
-  deleteAt: Date;
+  deletedAt: Date;
 
   @Column({
     type: DataType.DATE,

@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import bcrypt from 'bcryptjs';
+import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ListAuthDto } from 'src/modules/auth/dto/list-auth.dto';
 import { UserDomain } from 'src/domain/user/user.domain';
@@ -38,7 +38,7 @@ export class AuthApplication {
 
   async login(email: string, password: string): Promise<JwtAccessToken> {
     const user: User = await this.userDomain.findByEmail(email);
-    const auth: boolean = await bcrypt.compare(password, user.password);
+    const auth: boolean = await compare(password, user.password);
     if (!auth) {
       throw new UnauthorizedException();
     }

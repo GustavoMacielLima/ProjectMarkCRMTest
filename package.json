@@ -44,6 +44,7 @@
     "@nestjs/sequelize": "^11.0.0",
     "@nestjs/typeorm": "^10.0.2",
     "@types/sequelize": "^4.28.20",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cache-manager": "^5.4.0",
     "cache-manager-redis-yet": "^4.2.0",

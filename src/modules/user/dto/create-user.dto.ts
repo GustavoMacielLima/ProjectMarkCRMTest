@@ -7,7 +7,6 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
-import { EmailExist } from '../validation/email-exist.validator';
 import { UserRole } from '../../../models/user.model';
 
 export class CreateUserDto {
@@ -37,7 +36,6 @@ export class CreateUserDto {
 
   @IsNotEmpty({ message: 'REQUIRED_EMAIL' })
   @IsEmail(undefined, { message: 'INVALID_EMAIL' })
-  @EmailExist({ message: 'EMAIL_ALREADY_EXISTS' })
   email: string;
 
   @MinLength(6, { message: 'INVALID_MIN_PASSWORD' })

@@ -99,5 +99,5 @@ export class Company extends Model {
     type: DataType.DATE,
     allowNull: true,
   })
-  deleteAt: Date;
+  deletedAt: Date;
 }
