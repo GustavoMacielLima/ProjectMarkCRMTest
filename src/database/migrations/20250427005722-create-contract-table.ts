@@ -56,10 +56,6 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
       },
-      mainContact: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-      },
       companyId: {
         type: Sequelize.INTEGER,
         allowNull: false,

@@ -8,7 +8,7 @@ import { Company } from 'src/models/company.model';
 @Injectable()
 export class CompanyDomain extends BaseDomain<Company> {
   constructor(
-    @Inject(RepositoryProvider.USER)
+    @Inject(RepositoryProvider.COMPANY)
     userRepository: Repository<Company>,
     public readonly sessionService: SessionService,
   ) {

@@ -103,12 +103,6 @@ export class Contract extends Model {
   })
   isCurrent: boolean;
 
-  @Column({
-    type: DataType.STRING(255),
-    allowNull: false,
-  })
-  mainContact: string;
-
   @ForeignKey(() => Company)
   @Column({
     type: DataType.INTEGER,

@@ -86,10 +86,13 @@ export class BaseDomain<T extends Model> {
     return entities;
   }
 
-  async findOne(whereOptions: WhereOptions = {}): Promise<T> {
+  async findOne(
+    whereOptions: WhereOptions = {},
+    emptyValue: boolean = false,
+  ): Promise<T> {
     this.setSearchContraints(whereOptions);
     const entity = await this.repository.findOne({ where: whereOptions });
-    if (!entity) {
+    if (!entity && !emptyValue) {
       throw new NotFoundException(`${this.getEntityName()}_NOT_FOUND`);
     }
     return entity;

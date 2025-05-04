@@ -29,6 +29,7 @@ export class ContractController {
   async create(
     @Body() createContractDto: CreateContractDto,
   ): Promise<ListContractDto> {
+    console.log('createContractDto', createContractDto);
     const newContract: Contract =
       await this.contractApplication.create(createContractDto);
     if (!newContract) {

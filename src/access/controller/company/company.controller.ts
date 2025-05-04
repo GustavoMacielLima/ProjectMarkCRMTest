@@ -35,12 +35,12 @@ export class CompanyController {
     return new ListCompanyDto(
       newCompany.stringId,
       newCompany.name,
-      newCompany.email,
       newCompany.socialName,
       newCompany.revanueRecord,
       newCompany.phone,
       newCompany.paymentMethod,
       newCompany.mainContact,
+      newCompany.email,
       newCompany.address,
       newCompany.isActive,
     );
@@ -54,12 +54,12 @@ export class CompanyController {
         new ListCompanyDto(
           company.stringId,
           company.name,
-          company.email,
           company.socialName,
           company.revanueRecord,
           company.phone,
           company.paymentMethod,
           company.mainContact,
+          company.email,
           company.address,
           company.isActive,
         ),
@@ -76,12 +76,12 @@ export class CompanyController {
     const listCompanyDto: ListCompanyDto = new ListCompanyDto(
       company.stringId,
       company.name,
-      company.email,
       company.socialName,
       company.revanueRecord,
       company.phone,
       company.paymentMethod,
       company.mainContact,
+      company.email,
       company.address,
       company.isActive,
     );

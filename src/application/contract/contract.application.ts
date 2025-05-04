@@ -1,17 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CompanyDomain } from 'src/domain/company/company.domain';
 import { ContractDomain } from 'src/domain/contract/contract.domain';
+import { Company } from 'src/models/company.model';
 import { Contract } from 'src/models/contract.model';
 import { CreateContractDto } from 'src/modules/contract/dto/create-contract.dto';
 import { UpdateContractDto } from 'src/modules/contract/dto/update-contract.dto';
 
 @Injectable()
 export class ContractApplication {
-  constructor(private readonly contractDomain: ContractDomain) {}
+  constructor(
+    private readonly contractDomain: ContractDomain,
+    private companyDomain: CompanyDomain,
+  ) {}
 
   async create(createContractDto: CreateContractDto): Promise<Contract> {
     const newContract: Contract = new Contract();
+    const company: Company = await this.companyDomain.findByStringId(
+      createContractDto.companyId,
+    );
+
+    if (!company) {
+      throw new NotFoundException('COMPANY_NOT_FOUND');
+    }
 
     Object.assign(newContract, createContractDto);
+    newContract.companyId = company.id;
     const createdContract: Contract =
       await this.contractDomain.createNewContract(newContract);
 

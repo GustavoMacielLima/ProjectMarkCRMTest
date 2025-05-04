@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { PdvStatusEnum, ProviderEnum } from 'src/models/pdv.model';
 
 export class CreatePdvDto {
@@ -16,7 +16,7 @@ export class CreatePdvDto {
   @IsNotEmpty({ message: 'REQUIRED_CONTRACT_ID' })
   contractId: number;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty({ message: 'REQUIRED_COMPANY_ID' })
-  companyId: number;
+  companyId: string;
 }
