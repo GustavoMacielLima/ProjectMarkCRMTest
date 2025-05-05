@@ -16,11 +16,9 @@ export class ContractDomain extends BaseDomain<Contract> {
   }
 
   public async createNewContract(contract: Contract): Promise<Contract> {
-    const allContracts = await this.findAll({
-      isCurrent: true,
-    });
+    const allContracts = await this.findAll();
     for (const existingContract of allContracts) {
-      if (existingContract.provider !== contract.provider) return;
+      if (existingContract.provider !== contract.provider) continue;
       this.setOldestVersions(existingContract);
     }
     contract.isCurrent = true;

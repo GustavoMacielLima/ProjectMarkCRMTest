@@ -7,14 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
   HttpStatus,
   HttpCode,
   NotFoundException,
 } from '@nestjs/common';
 import { CompanyApplication } from 'src/application/company/company.application';
 import { Company } from 'src/models/company.model';
-import { AuthGuard, RequestUser } from 'src/modules/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { CreateCompanyDto } from 'src/modules/company/dto/create-company.dto';
 import { ListCompanyDto } from 'src/modules/company/dto/list-company.dto';
@@ -138,10 +137,9 @@ export class CompanyController {
   async update(
     @Param('id') id: string,
     @Body() updateCompanyDto: UpdateCompanyDto,
-    @Req() requestCompany: RequestUser,
   ): Promise<ListCompanyDto> {
     const company: Company = await this.companyApplication.update(
-      requestCompany.user.sub,
+      id,
       updateCompanyDto,
     );
     if (!company) {
