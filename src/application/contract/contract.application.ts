@@ -32,7 +32,9 @@ export class ContractApplication {
   }
 
   async findAll(): Promise<Array<Contract>> {
-    const contracts: Array<Contract> = await this.contractDomain.findAll();
+    const contracts: Array<Contract> = await this.contractDomain.findAll({
+      isCurrent: true,
+    });
     return contracts;
   }
 
@@ -48,10 +50,23 @@ export class ContractApplication {
     id: string,
     updateContractDto: UpdateContractDto,
   ): Promise<Contract> {
+    const newContract: Contract = new Contract();
     const contract = await this.findOne(id);
-    Object.assign(contract, updateContractDto);
-    this.contractDomain.update(contract.id, contract);
-    return contract;
+    if (!contract) {
+      throw new NotFoundException('CONTRACT_NOT_FOUND');
+    }
+    newContract.provider = contract.provider;
+    newContract.rentValue = contract.rentValue;
+    newContract.debitTax = contract.debitTax;
+    newContract.pixTax = contract.pixTax;
+    newContract.creditTax = contract.creditTax;
+    newContract.creditLowTax = contract.creditLowTax;
+    newContract.creditHighTax = contract.creditHighTax;
+    newContract.paymentIntervalDay = contract.paymentIntervalDay;
+    newContract.companyId = contract.companyId;
+    Object.assign(newContract, updateContractDto);
+    await this.contractDomain.createNewContract(newContract);
+    return newContract;
   }
 
   async remove(id: string) {

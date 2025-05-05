@@ -5,6 +5,7 @@ import {
 
 export class ListContractDto {
   constructor(
+    readonly id: string,
     readonly provider: ProviderEnum,
     readonly rentValue: number,
     readonly debitTax: number,

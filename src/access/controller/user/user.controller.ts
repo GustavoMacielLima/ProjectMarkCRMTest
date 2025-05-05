@@ -59,6 +59,20 @@ export class UserController {
     );
   }
 
+  @Get('myself')
+  async myself(@Req() requestUser: RequestUser): Promise<ListUserDto> {
+    const user: User = await this.userApplication.findOne(requestUser.user.sub);
+    return new ListUserDto(
+      user.stringId,
+      user.fullName,
+      user.email,
+      user.phone,
+      user.role,
+      user.isActive,
+      user.identifier,
+    );
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ListUserDto> {
     const user: User = await this.userApplication.findOne(id);

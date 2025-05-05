@@ -82,7 +82,7 @@ export class BaseDomain<T extends Model> {
 
   async findAll(whereOptions: WhereOptions = {}): Promise<Array<T>> {
     this.setSearchContraints(whereOptions);
-    const entities = await this.repository.findAll();
+    const entities = await this.repository.findAll({ where: whereOptions });
     return entities;
   }
 
@@ -115,9 +115,12 @@ export class BaseDomain<T extends Model> {
   }
 
   async update(id: number, record: T): Promise<T> {
-    this.setConstraints(record, true);
+    this.setConstraints(record, false);
     const entity = await this.findByPk(id);
-    await entity.update(record);
+    await this.repository.update(
+      { ...record.get() },
+      { where: { id: id as any } },
+    );
     return entity;
   }
 

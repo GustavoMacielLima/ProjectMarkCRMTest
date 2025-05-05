@@ -32,6 +32,7 @@ export class PdvController {
       throw new Error('PDV_NOT_CREATED');
     }
     const pdv: ListPdvDto = new ListPdvDto(
+      newPdv.stringId,
       newPdv.provider,
       newPdv.status,
       newPdv.serialNumber,
@@ -47,6 +48,7 @@ export class PdvController {
     const pdvList: Array<ListPdvDto> = pdvs.map(
       (pdv: Pdv) =>
         new ListPdvDto(
+          pdv.stringId,
           pdv.provider,
           pdv.status,
           pdv.serialNumber,
@@ -64,6 +66,7 @@ export class PdvController {
       throw new Error('PDV_NOT_FOUND');
     }
     const pdvList: ListPdvDto = new ListPdvDto(
+      pdv.stringId,
       pdv.provider,
       pdv.status,
       pdv.serialNumber,
@@ -88,6 +91,7 @@ export class PdvController {
       throw new Error('PDV_NOT_FOUND');
     }
     const pdvList: ListPdvDto = new ListPdvDto(
+      pdv.stringId,
       pdv.provider,
       pdv.status,
       pdv.serialNumber,
