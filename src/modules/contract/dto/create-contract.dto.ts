@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import {
   PaymentIntervalDayEnum,
   ProviderEnum,
@@ -39,7 +39,7 @@ export class CreateContractDto {
   @IsNotEmpty({ message: 'REQUIRED_PAYMENT_INTERVAL_DAY' })
   paymentIntervalDay: PaymentIntervalDayEnum;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty({ message: 'REQUIRED_COMPANY_ID' })
-  companyId: number;
+  companyId: string;
 }

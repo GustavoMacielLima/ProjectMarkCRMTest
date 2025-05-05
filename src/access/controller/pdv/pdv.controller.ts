@@ -7,13 +7,12 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
 import { PdvApplication } from 'src/application/pdv/pdv.application';
 import { Pdv } from 'src/models/pdv.model';
-import { AuthGuard, RequestUser } from 'src/modules/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { CreatePdvDto } from 'src/modules/pdv/dto/create-pdv.dto';
 import { ListPdvDto } from 'src/modules/pdv/dto/list-pdv.dto';
@@ -32,6 +31,7 @@ export class PdvController {
       throw new Error('PDV_NOT_CREATED');
     }
     const pdv: ListPdvDto = new ListPdvDto(
+      newPdv.stringId,
       newPdv.provider,
       newPdv.status,
       newPdv.serialNumber,
@@ -47,6 +47,7 @@ export class PdvController {
     const pdvList: Array<ListPdvDto> = pdvs.map(
       (pdv: Pdv) =>
         new ListPdvDto(
+          pdv.stringId,
           pdv.provider,
           pdv.status,
           pdv.serialNumber,
@@ -64,6 +65,7 @@ export class PdvController {
       throw new Error('PDV_NOT_FOUND');
     }
     const pdvList: ListPdvDto = new ListPdvDto(
+      pdv.stringId,
       pdv.provider,
       pdv.status,
       pdv.serialNumber,
@@ -78,16 +80,13 @@ export class PdvController {
   async update(
     @Param('id') id: string,
     @Body() updatePdvDto: UpdatePdvDto,
-    @Req() requestPdv: RequestUser,
   ): Promise<ListPdvDto> {
-    const pdv: Pdv = await this.pdvApplication.update(
-      requestPdv.user.sub,
-      updatePdvDto,
-    );
+    const pdv: Pdv = await this.pdvApplication.update(id, updatePdvDto);
     if (!pdv) {
       throw new Error('PDV_NOT_FOUND');
     }
     const pdvList: ListPdvDto = new ListPdvDto(
+      pdv.stringId,
       pdv.provider,
       pdv.status,
       pdv.serialNumber,

@@ -7,14 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
   HttpStatus,
   HttpCode,
   NotFoundException,
 } from '@nestjs/common';
 import { CompanyApplication } from 'src/application/company/company.application';
 import { Company } from 'src/models/company.model';
-import { AuthGuard, RequestUser } from 'src/modules/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { CreateCompanyDto } from 'src/modules/company/dto/create-company.dto';
 import { ListCompanyDto } from 'src/modules/company/dto/list-company.dto';
@@ -35,12 +34,12 @@ export class CompanyController {
     return new ListCompanyDto(
       newCompany.stringId,
       newCompany.name,
-      newCompany.email,
       newCompany.socialName,
       newCompany.revanueRecord,
       newCompany.phone,
       newCompany.paymentMethod,
       newCompany.mainContact,
+      newCompany.email,
       newCompany.address,
       newCompany.isActive,
     );
@@ -54,15 +53,60 @@ export class CompanyController {
         new ListCompanyDto(
           company.stringId,
           company.name,
-          company.email,
           company.socialName,
           company.revanueRecord,
           company.phone,
           company.paymentMethod,
           company.mainContact,
+          company.email,
           company.address,
           company.isActive,
         ),
+    );
+    return listCompanyDto;
+  }
+
+  @Get('contract/:contractId')
+  async findByContract(
+    @Param('contractId') contractId: string,
+  ): Promise<ListCompanyDto> {
+    const company: Company =
+      await this.companyApplication.findByContract(contractId);
+    if (!company) {
+      throw new NotFoundException('COMPANY_NOT_FOUND');
+    }
+    const listCompanyDto: ListCompanyDto = new ListCompanyDto(
+      company.stringId,
+      company.name,
+      company.socialName,
+      company.revanueRecord,
+      company.phone,
+      company.paymentMethod,
+      company.mainContact,
+      company.email,
+      company.address,
+      company.isActive,
+    );
+    return listCompanyDto;
+  }
+
+  @Get('pdv/:pdvId')
+  async findByPdv(@Param('pdvId') pdvId: string): Promise<ListCompanyDto> {
+    const company: Company = await this.companyApplication.findByPdv(pdvId);
+    if (!company) {
+      throw new NotFoundException('COMPANY_NOT_FOUND');
+    }
+    const listCompanyDto: ListCompanyDto = new ListCompanyDto(
+      company.stringId,
+      company.name,
+      company.socialName,
+      company.revanueRecord,
+      company.phone,
+      company.paymentMethod,
+      company.mainContact,
+      company.email,
+      company.address,
+      company.isActive,
     );
     return listCompanyDto;
   }
@@ -76,12 +120,12 @@ export class CompanyController {
     const listCompanyDto: ListCompanyDto = new ListCompanyDto(
       company.stringId,
       company.name,
-      company.email,
       company.socialName,
       company.revanueRecord,
       company.phone,
       company.paymentMethod,
       company.mainContact,
+      company.email,
       company.address,
       company.isActive,
     );
@@ -93,10 +137,9 @@ export class CompanyController {
   async update(
     @Param('id') id: string,
     @Body() updateCompanyDto: UpdateCompanyDto,
-    @Req() requestCompany: RequestUser,
   ): Promise<ListCompanyDto> {
     const company: Company = await this.companyApplication.update(
-      requestCompany.user.sub,
+      id,
       updateCompanyDto,
     );
     if (!company) {

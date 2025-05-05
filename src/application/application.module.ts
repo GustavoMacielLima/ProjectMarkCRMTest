@@ -7,12 +7,14 @@ import { EmailService } from 'src/resources/services/email.service';
 import { CompanyApplication } from './company/company.application';
 import { ContractApplication } from './contract/contract.application';
 import { PdvApplication } from './pdv/pdv.application';
+import { SessionService } from 'src/resources/services/session.service';
 
 @Module({
   imports: [DomainModule],
   providers: [
     VerificationService,
     EmailService,
+    SessionService,
     AuthApplication,
     UserApplication,
     ConsoleLogger,

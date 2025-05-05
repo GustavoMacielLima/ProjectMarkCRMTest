@@ -14,7 +14,7 @@ import { User, UserRole } from 'src/models/user.model';
 @Injectable()
 export class PdvDomain extends BaseDomain<Pdv> {
   constructor(
-    @Inject(RepositoryProvider.USER)
+    @Inject(RepositoryProvider.PDV)
     pdvRepository: Repository<Pdv>,
     public readonly sessionService: SessionService,
   ) {
@@ -26,9 +26,12 @@ export class PdvDomain extends BaseDomain<Pdv> {
     if (loggedUser && loggedUser.role !== UserRole.ADMIN) {
       throw new UnauthorizedException();
     }
-    const existingPdv = await this.findOne({
-      serialNumber: pdv.serialNumber,
-    });
+    const existingPdv = await this.findOne(
+      {
+        serialNumber: pdv.serialNumber,
+      },
+      true,
+    );
     if (existingPdv) {
       throw new BadRequestException('SERIAL_NUMBER_ALREADY_EXISTS');
     }

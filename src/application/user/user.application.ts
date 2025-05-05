@@ -3,6 +3,7 @@ import { UserDomain } from 'src/domain/user/user.domain';
 import { User } from 'src/models/user.model';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
+import { SessionService } from 'src/resources/services/session.service';
 import { VerificationService } from 'src/resources/services/verification.service';
 
 @Injectable()
@@ -10,6 +11,7 @@ export class UserApplication {
   constructor(
     private readonly userDomain: UserDomain,
     private readonly verificationService: VerificationService,
+    private readonly sessionService: SessionService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -45,6 +47,11 @@ export class UserApplication {
       throw new NotFoundException('USER_NOT_FOUND');
     }
     return user;
+  }
+
+  async myself(): Promise<User> {
+    const loggedUser: User = this.sessionService.getUser();
+    return loggedUser;
   }
 
   async findByEmail(email: string): Promise<User> {

@@ -82,14 +82,17 @@ export class BaseDomain<T extends Model> {
 
   async findAll(whereOptions: WhereOptions = {}): Promise<Array<T>> {
     this.setSearchContraints(whereOptions);
-    const entities = await this.repository.findAll();
+    const entities = await this.repository.findAll({ where: whereOptions });
     return entities;
   }
 
-  async findOne(whereOptions: WhereOptions = {}): Promise<T> {
+  async findOne(
+    whereOptions: WhereOptions = {},
+    emptyValue: boolean = false,
+  ): Promise<T> {
     this.setSearchContraints(whereOptions);
     const entity = await this.repository.findOne({ where: whereOptions });
-    if (!entity) {
+    if (!entity && !emptyValue) {
       throw new NotFoundException(`${this.getEntityName()}_NOT_FOUND`);
     }
     return entity;
@@ -112,9 +115,12 @@ export class BaseDomain<T extends Model> {
   }
 
   async update(id: number, record: T): Promise<T> {
-    this.setConstraints(record, true);
+    this.setConstraints(record, false);
     const entity = await this.findByPk(id);
-    await entity.update(record);
+    await this.repository.update(
+      { ...record.get() },
+      { where: { id: id as any } },
+    );
     return entity;
   }
 

@@ -70,7 +70,7 @@ export class User extends Model {
     allowNull: false,
     defaultValue: 'manager',
   })
-  role: string;
+  role: UserRole;
 
   @Column({
     type: DataType.STRING(255),

@@ -7,13 +7,12 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
 import { ContractApplication } from 'src/application/contract/contract.application';
 import { Contract } from 'src/models/contract.model';
-import { AuthGuard, RequestUser } from 'src/modules/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { CreateContractDto } from 'src/modules/contract/dto/create-contract.dto';
 import { ListContractDto } from 'src/modules/contract/dto/list-contract.dto';
@@ -29,12 +28,14 @@ export class ContractController {
   async create(
     @Body() createContractDto: CreateContractDto,
   ): Promise<ListContractDto> {
+    console.log('createContractDto', createContractDto);
     const newContract: Contract =
       await this.contractApplication.create(createContractDto);
     if (!newContract) {
       throw new Error('CONTRACT_NOT_CREATED');
     }
     const contract: ListContractDto = new ListContractDto(
+      newContract.stringId,
       newContract.provider,
       newContract.rentValue,
       newContract.debitTax,
@@ -54,6 +55,7 @@ export class ContractController {
     const contractList: Array<ListContractDto> = contracts.map(
       (contract: Contract) =>
         new ListContractDto(
+          contract.stringId,
           contract.provider,
           contract.rentValue,
           contract.debitTax,
@@ -75,6 +77,7 @@ export class ContractController {
       throw new Error('CONTRACT_NOT_FOUND');
     }
     const contractList: ListContractDto = new ListContractDto(
+      contract.stringId,
       contract.provider,
       contract.rentValue,
       contract.debitTax,
@@ -93,16 +96,16 @@ export class ContractController {
   async update(
     @Param('id') id: string,
     @Body() updateContractDto: UpdateContractDto,
-    @Req() requestContract: RequestUser,
   ): Promise<ListContractDto> {
     const contract: Contract = await this.contractApplication.update(
-      requestContract.user.sub,
+      id,
       updateContractDto,
     );
     if (!contract) {
       throw new Error('CONTRACT_NOT_FOUND');
     }
     const contractList: ListContractDto = new ListContractDto(
+      contract.stringId,
       contract.provider,
       contract.rentValue,
       contract.debitTax,
