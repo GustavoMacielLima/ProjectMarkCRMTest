@@ -12,10 +12,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CompanyApplication } from 'src/application/company/company.application';
+import { Pagination } from 'src/domain/base.domain';
 import { Company } from 'src/models/company.model';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { CreateCompanyDto } from 'src/modules/company/dto/create-company.dto';
+import { FilterCompanyDto } from 'src/modules/company/dto/filter-company.dto';
 import { ListCompanyDto } from 'src/modules/company/dto/list-company.dto';
 import { UpdateCompanyDto } from 'src/modules/company/dto/update-company.dto';
 
@@ -43,6 +45,34 @@ export class CompanyController {
       newCompany.address,
       newCompany.isActive,
     );
+  }
+
+  @Post('list')
+  async paginatedList(
+    @Body() filterCompanyDto: FilterCompanyDto,
+  ): Promise<{ data: ListCompanyDto[]; pagination: Pagination }> {
+    const companies: { data: Company[]; pagination: Pagination } =
+      await this.companyApplication.findPaginated(filterCompanyDto);
+    const listCompanyDto: ListCompanyDto[] = companies.data.map(
+      (company) =>
+        new ListCompanyDto(
+          company.stringId,
+          company.name,
+          company.socialName,
+          company.revanueRecord,
+          company.phone,
+          company.paymentMethod,
+          company.mainContact,
+          company.email,
+          company.address,
+          company.isActive,
+        ),
+    );
+
+    return {
+      data: listCompanyDto,
+      pagination: companies.pagination,
+    };
   }
 
   @Get()

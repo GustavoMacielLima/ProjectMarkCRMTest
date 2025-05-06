@@ -11,10 +11,12 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { PdvApplication } from 'src/application/pdv/pdv.application';
+import { Pagination } from 'src/domain/base.domain';
 import { Pdv } from 'src/models/pdv.model';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { CreatePdvDto } from 'src/modules/pdv/dto/create-pdv.dto';
+import { FilterPdvDto } from 'src/modules/pdv/dto/filter-pdv.dto';
 import { ListPdvDto } from 'src/modules/pdv/dto/list-pdv.dto';
 import { UpdatePdvDto } from 'src/modules/pdv/dto/update-pdv.dto';
 
@@ -39,6 +41,30 @@ export class PdvController {
       newPdv.companyId,
     );
     return pdv;
+  }
+
+  @Post('list')
+  async paginatedList(
+    @Body() filterPdvDto: FilterPdvDto,
+  ): Promise<{ data: ListPdvDto[]; pagination: Pagination }> {
+    const companies: { data: Pdv[]; pagination: Pagination } =
+      await this.pdvApplication.findPaginated(filterPdvDto);
+    const listPdvDto: ListPdvDto[] = companies.data.map(
+      (pdv: Pdv) =>
+        new ListPdvDto(
+          pdv.stringId,
+          pdv.provider,
+          pdv.status,
+          pdv.serialNumber,
+          pdv.contractId,
+          pdv.companyId,
+        ),
+    );
+
+    return {
+      data: listPdvDto,
+      pagination: companies.pagination,
+    };
   }
 
   @Get()

@@ -12,9 +12,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserApplication } from 'src/application/user/user.application';
+import { Pagination } from 'src/domain/base.domain';
 import { User } from 'src/models/user.model';
 import { AuthGuard, RequestUser } from 'src/modules/auth/auth.guard';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
+import { FilterUserDto } from 'src/modules/user/dto/filter-user.dto';
 import { ListUserDto } from 'src/modules/user/dto/list-user.dto';
 import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
 import { PasswordHash } from 'src/resources/pipes/password-hash.pipe';
@@ -40,6 +42,31 @@ export class UserController {
       newUser.isActive,
       newUser.identifier,
     );
+  }
+
+  @Post('list')
+  async paginatedList(
+    @Body() filterUserDto: FilterUserDto,
+  ): Promise<{ data: ListUserDto[]; pagination: Pagination }> {
+    const companies: { data: User[]; pagination: Pagination } =
+      await this.userApplication.findPaginated(filterUserDto);
+    const listUserDto: ListUserDto[] = companies.data.map(
+      (user) =>
+        new ListUserDto(
+          user.stringId,
+          user.fullName,
+          user.email,
+          user.phone,
+          user.role,
+          user.isActive,
+          user.identifier,
+        ),
+    );
+
+    return {
+      data: listUserDto,
+      pagination: companies.pagination,
+    };
   }
 
   @Get()

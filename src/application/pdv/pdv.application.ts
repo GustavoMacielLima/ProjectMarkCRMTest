@@ -1,4 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Op } from 'sequelize';
+import { WhereOptions } from 'sequelize';
+import { Pagination } from 'src/domain/base.domain';
 import { CompanyDomain } from 'src/domain/company/company.domain';
 import { ContractDomain } from 'src/domain/contract/contract.domain';
 import { PdvDomain } from 'src/domain/pdv/pdv.domain';
@@ -6,6 +9,7 @@ import { Company } from 'src/models/company.model';
 import { Contract } from 'src/models/contract.model';
 import { Pdv } from 'src/models/pdv.model';
 import { CreatePdvDto } from 'src/modules/pdv/dto/create-pdv.dto';
+import { FilterPdvDto } from 'src/modules/pdv/dto/filter-pdv.dto';
 import { UpdatePdvDto } from 'src/modules/pdv/dto/update-pdv.dto';
 
 @Injectable()
@@ -55,6 +59,39 @@ export class PdvApplication {
       throw new NotFoundException('USER_NOT_FOUND');
     }
     return pdv;
+  }
+
+  async findPaginated(
+    filterPdvDto: FilterPdvDto,
+  ): Promise<{ data: Pdv[]; pagination: Pagination }> {
+    let where: WhereOptions = {};
+    if (filterPdvDto.serialNumber) {
+      where = {
+        ...where,
+        name: { [Op.like]: `%${filterPdvDto.serialNumber}%` },
+      };
+    }
+
+    if (filterPdvDto.status) {
+      where = { ...where, status: filterPdvDto.status };
+    }
+
+    if (filterPdvDto.provider) {
+      where = { ...where, provider: filterPdvDto.provider };
+    }
+
+    if (filterPdvDto.companyId) {
+      const company: Company = await this.companyDomain.findByStringId(
+        filterPdvDto.companyId,
+      );
+      where = { ...where, companyId: company.id };
+    }
+
+    return this.pdvDomain.findPaginated(
+      where,
+      filterPdvDto?.pagination?.page,
+      filterPdvDto?.pagination?.limit,
+    );
   }
 
   async update(id: string, updatePdvDto: UpdatePdvDto): Promise<Pdv> {

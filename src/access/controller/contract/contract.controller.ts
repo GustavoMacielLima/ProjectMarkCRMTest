@@ -11,10 +11,12 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ContractApplication } from 'src/application/contract/contract.application';
+import { Pagination } from 'src/domain/base.domain';
 import { Contract } from 'src/models/contract.model';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { CreateContractDto } from 'src/modules/contract/dto/create-contract.dto';
+import { FilterContractDto } from 'src/modules/contract/dto/filter-contract.dto';
 import { ListContractDto } from 'src/modules/contract/dto/list-contract.dto';
 import { UpdateContractDto } from 'src/modules/contract/dto/update-contract.dto';
 
@@ -47,6 +49,34 @@ export class ContractController {
       newContract.companyId,
     );
     return contract;
+  }
+
+  @Post('list')
+  async paginatedList(
+    @Body() filterCompanyDto: FilterContractDto,
+  ): Promise<{ data: ListContractDto[]; pagination: Pagination }> {
+    const contracts: { data: Contract[]; pagination: Pagination } =
+      await this.contractApplication.findPaginated(filterCompanyDto);
+    const listCompanyDto: ListContractDto[] = contracts.data.map(
+      (contract: Contract) =>
+        new ListContractDto(
+          contract.stringId,
+          contract.provider,
+          contract.rentValue,
+          contract.debitTax,
+          contract.pixTax,
+          contract.creditTax,
+          contract.creditLowTax,
+          contract.creditHighTax,
+          contract.paymentIntervalDay,
+          contract.companyId,
+        ),
+    );
+
+    return {
+      data: listCompanyDto,
+      pagination: contracts.pagination,
+    };
   }
 
   @Get()

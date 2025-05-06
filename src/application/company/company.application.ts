@@ -1,4 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Op } from 'sequelize';
+import { WhereOptions } from 'sequelize';
+import { Pagination } from 'src/domain/base.domain';
 import { CompanyDomain } from 'src/domain/company/company.domain';
 import { ContractDomain } from 'src/domain/contract/contract.domain';
 import { PdvDomain } from 'src/domain/pdv/pdv.domain';
@@ -6,6 +9,7 @@ import { Company } from 'src/models/company.model';
 import { Contract } from 'src/models/contract.model';
 import { Pdv } from 'src/models/pdv.model';
 import { CreateCompanyDto } from 'src/modules/company/dto/create-company.dto';
+import { FilterCompanyDto } from 'src/modules/company/dto/filter-company.dto';
 import { UpdateCompanyDto } from 'src/modules/company/dto/update-company.dto';
 
 @Injectable()
@@ -63,6 +67,43 @@ export class CompanyApplication {
       throw new NotFoundException('USER_NOT_FOUND');
     }
     return company;
+  }
+
+  async findPaginated(
+    filterCompanyDto: FilterCompanyDto,
+  ): Promise<{ data: Company[]; pagination: Pagination }> {
+    let where: WhereOptions = {};
+    if (filterCompanyDto.name) {
+      where = { ...where, name: { [Op.like]: `%${filterCompanyDto.name}%` } };
+    }
+
+    if (filterCompanyDto.phone) {
+      where = { ...where, phone: { [Op.like]: `%${filterCompanyDto.phone}%` } };
+    }
+
+    if (filterCompanyDto.provider) {
+      where = { ...where, provider: filterCompanyDto.provider };
+    }
+
+    if (filterCompanyDto.revanueRecord) {
+      where = {
+        ...where,
+        revanueRecord: { [Op.like]: `%${filterCompanyDto.revanueRecord}%` },
+      };
+    }
+
+    if (filterCompanyDto.socialName) {
+      where = {
+        ...where,
+        socialName: { [Op.like]: `%${filterCompanyDto.socialName}%` },
+      };
+    }
+
+    return this.companyDomain.findPaginated(
+      where,
+      filterCompanyDto?.pagination?.page,
+      filterCompanyDto?.pagination?.limit,
+    );
   }
 
   async update(

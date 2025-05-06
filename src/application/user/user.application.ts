@@ -1,7 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Op } from 'sequelize';
+import { WhereOptions } from 'sequelize';
+import { Pagination } from 'src/domain/base.domain';
+import { CompanyDomain } from 'src/domain/company/company.domain';
 import { UserDomain } from 'src/domain/user/user.domain';
+import { Company } from 'src/models/company.model';
 import { User } from 'src/models/user.model';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
+import { FilterUserDto } from 'src/modules/user/dto/filter-user.dto';
 import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
 import { SessionService } from 'src/resources/services/session.service';
 import { VerificationService } from 'src/resources/services/verification.service';
@@ -10,6 +16,7 @@ import { VerificationService } from 'src/resources/services/verification.service
 export class UserApplication {
   constructor(
     private readonly userDomain: UserDomain,
+    private readonly companyDomain: CompanyDomain,
     private readonly verificationService: VerificationService,
     private readonly sessionService: SessionService,
   ) {}
@@ -52,6 +59,49 @@ export class UserApplication {
   async myself(): Promise<User> {
     const loggedUser: User = this.sessionService.getUser();
     return loggedUser;
+  }
+
+  async findPaginated(
+    filteruserDto: FilterUserDto,
+  ): Promise<{ data: User[]; pagination: Pagination }> {
+    let where: WhereOptions = {};
+    if (filteruserDto.fullName) {
+      where = {
+        ...where,
+        fullName: { [Op.like]: `%${filteruserDto.fullName}%` },
+      };
+    }
+
+    if (filteruserDto.phone) {
+      where = { ...where, phone: { [Op.like]: `%${filteruserDto.phone}%` } };
+    }
+
+    if (filteruserDto.email) {
+      where = {
+        ...where,
+        email: { [Op.like]: `%${filteruserDto.email}%` },
+      };
+    }
+
+    if (filteruserDto.identifier) {
+      where = {
+        ...where,
+        identifier: { [Op.like]: `%${filteruserDto.identifier}%` },
+      };
+    }
+
+    if (filteruserDto.companyId) {
+      const company: Company = await this.companyDomain.findByStringId(
+        filteruserDto.companyId,
+      );
+      where = { ...where, companyId: company.id };
+    }
+
+    return this.userDomain.findPaginated(
+      where,
+      filteruserDto?.pagination?.page,
+      filteruserDto?.pagination?.limit,
+    );
   }
 
   async findByEmail(email: string): Promise<User> {

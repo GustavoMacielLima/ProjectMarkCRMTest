@@ -19,5 +19,9 @@ export class FilterUserDto {
   phone?: string;
 
   @IsOptional()
+  @IsString()
+  companyId?: string;
+
+  @IsOptional()
   pagination?: PaginationDto;
 }

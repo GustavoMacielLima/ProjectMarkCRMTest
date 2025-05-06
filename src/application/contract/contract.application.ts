@@ -1,16 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { WhereOptions } from 'sequelize';
+import { Pagination } from 'src/domain/base.domain';
 import { CompanyDomain } from 'src/domain/company/company.domain';
 import { ContractDomain } from 'src/domain/contract/contract.domain';
 import { Company } from 'src/models/company.model';
 import { Contract } from 'src/models/contract.model';
 import { CreateContractDto } from 'src/modules/contract/dto/create-contract.dto';
+import { FilterContractDto } from 'src/modules/contract/dto/filter-contract.dto';
 import { UpdateContractDto } from 'src/modules/contract/dto/update-contract.dto';
 
 @Injectable()
 export class ContractApplication {
   constructor(
     private readonly contractDomain: ContractDomain,
-    private companyDomain: CompanyDomain,
+    private readonly companyDomain: CompanyDomain,
   ) {}
 
   async create(createContractDto: CreateContractDto): Promise<Contract> {
@@ -44,6 +47,31 @@ export class ContractApplication {
       throw new NotFoundException('USER_NOT_FOUND');
     }
     return contract;
+  }
+
+  async findPaginated(
+    filterContractDto: FilterContractDto,
+  ): Promise<{ data: Contract[]; pagination: Pagination }> {
+    let where: WhereOptions = {
+      isCurrent: true,
+    };
+    if (filterContractDto.companyId) {
+      const company: Company = await this.companyDomain.findByStringId(
+        filterContractDto.companyId,
+      );
+
+      where = { ...where, companyId: company.id };
+    }
+
+    if (filterContractDto.provider) {
+      where = { ...where, provider: filterContractDto.provider };
+    }
+
+    return this.contractDomain.findPaginated(
+      where,
+      filterContractDto?.pagination?.page,
+      filterContractDto?.pagination?.limit,
+    );
   }
 
   async update(
