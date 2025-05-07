@@ -16,7 +16,9 @@ export class ContractDomain extends BaseDomain<Contract> {
   }
 
   public async createNewContract(contract: Contract): Promise<Contract> {
-    const allContracts = await this.findAll();
+    const allContracts = await this.findAll({
+      companyId: contract.companyId,
+    });
     for (const existingContract of allContracts) {
       if (existingContract.provider !== contract.provider) continue;
       this.setOldestVersions(existingContract);
