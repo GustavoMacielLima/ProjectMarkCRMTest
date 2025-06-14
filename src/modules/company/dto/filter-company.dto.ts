@@ -1,5 +1,4 @@
-import { IsOptional, IsString, IsEmail, IsEnum } from 'class-validator';
-import { ProviderEnum } from 'src/models/contract.model';
+import { IsOptional, IsString, IsEmail, IsBoolean } from 'class-validator';
 import { PaginationDto } from 'src/modules/pagination.dto';
 
 export class FilterCompanyDto {
@@ -20,8 +19,12 @@ export class FilterCompanyDto {
   phone?: string;
 
   @IsOptional()
-  @IsEnum(ProviderEnum, { message: 'INVALID_PROVIDER' })
-  provider?: ProviderEnum;
+  @IsString()
+  email?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  status?: boolean;
 
   @IsOptional()
   pagination?: PaginationDto;

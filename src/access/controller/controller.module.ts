@@ -9,6 +9,7 @@ import { SessionService } from 'src/resources/services/session.service';
 import { PdvController } from './pdv/pdv.controller';
 import { ContractController } from './contract/contract.controller';
 import { CompanyController } from './company/company.controller';
+import { OrderController } from './order/order.controller';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CompanyController } from './company/company.controller';
     PdvController,
     ContractController,
     CompanyController,
+    OrderController,
   ],
 })
 export class ControllerModule implements NestModule {
@@ -44,6 +46,7 @@ export class ControllerModule implements NestModule {
         PdvController,
         ContractController,
         CompanyController,
+        OrderController,
       );
   }
 }

@@ -4,9 +4,11 @@ import { WhereOptions } from 'sequelize';
 import { Pagination } from 'src/domain/base.domain';
 import { CompanyDomain } from 'src/domain/company/company.domain';
 import { ContractDomain } from 'src/domain/contract/contract.domain';
+import { OrderDomain } from 'src/domain/order/order.domain';
 import { PdvDomain } from 'src/domain/pdv/pdv.domain';
 import { Company } from 'src/models/company.model';
 import { Contract } from 'src/models/contract.model';
+import { Order } from 'src/models/order.model';
 import { Pdv } from 'src/models/pdv.model';
 import { CreateCompanyDto } from 'src/modules/company/dto/create-company.dto';
 import { FilterCompanyDto } from 'src/modules/company/dto/filter-company.dto';
@@ -18,6 +20,7 @@ export class CompanyApplication {
     private readonly companyDomain: CompanyDomain,
     private readonly contractDomain: ContractDomain,
     private readonly pdvDomain: PdvDomain,
+    private readonly orderDomain: OrderDomain,
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
@@ -61,6 +64,18 @@ export class CompanyApplication {
     return company;
   }
 
+  async findByOrder(orderId: string): Promise<Company> {
+    const order: Order = await this.orderDomain.findByStringId(orderId);
+    if (!order) {
+      throw new NotFoundException('ORDER_NOT_FOUND');
+    }
+    const company: Company = await this.companyDomain.findByPk(order.companyId);
+    if (!company) {
+      throw new NotFoundException('USER_NOT_FOUND');
+    }
+    return company;
+  }
+
   async findOne(id: string): Promise<Company> {
     const company: Company = await this.companyDomain.findByStringId(id);
     if (!company) {
@@ -74,29 +89,41 @@ export class CompanyApplication {
   ): Promise<{ data: Company[]; pagination: Pagination }> {
     let where: WhereOptions = {};
     if (filterCompanyDto.name) {
-      where = { ...where, name: { [Op.like]: `%${filterCompanyDto.name}%` } };
+      where = { ...where, name: { [Op.iLike]: `%${filterCompanyDto.name}%` } };
     }
 
     if (filterCompanyDto.phone) {
-      where = { ...where, phone: { [Op.like]: `%${filterCompanyDto.phone}%` } };
+      where = {
+        ...where,
+        phone: { [Op.iLike]: `%${filterCompanyDto.phone}%` },
+      };
     }
 
-    if (filterCompanyDto.provider) {
-      where = { ...where, provider: filterCompanyDto.provider };
+    if (filterCompanyDto.email) {
+      where = {
+        ...where,
+        email: { [Op.iLike]: `%${filterCompanyDto.email}%` },
+      };
     }
 
     if (filterCompanyDto.revanueRecord) {
       where = {
         ...where,
-        revanueRecord: { [Op.like]: `%${filterCompanyDto.revanueRecord}%` },
+        revanueRecord: { [Op.iLike]: `%${filterCompanyDto.revanueRecord}%` },
       };
     }
 
     if (filterCompanyDto.socialName) {
       where = {
         ...where,
-        socialName: { [Op.like]: `%${filterCompanyDto.socialName}%` },
+        socialName: { [Op.iLike]: `%${filterCompanyDto.socialName}%` },
       };
+    }
+
+    if (typeof filterCompanyDto.status === 'boolean') {
+      console.log('filterCompanyDto.status');
+      console.log(filterCompanyDto.status);
+      where = { ...where, isActive: filterCompanyDto.status };
     }
 
     return this.companyDomain.findPaginated(

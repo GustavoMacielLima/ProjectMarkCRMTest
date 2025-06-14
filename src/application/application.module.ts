@@ -8,6 +8,7 @@ import { CompanyApplication } from './company/company.application';
 import { ContractApplication } from './contract/contract.application';
 import { PdvApplication } from './pdv/pdv.application';
 import { SessionService } from 'src/resources/services/session.service';
+import { OrderApplication } from './order/order.application';
 
 @Module({
   imports: [DomainModule],
@@ -21,6 +22,7 @@ import { SessionService } from 'src/resources/services/session.service';
     CompanyApplication,
     ContractApplication,
     PdvApplication,
+    OrderApplication,
   ],
   exports: [
     AuthApplication,
@@ -28,6 +30,7 @@ import { SessionService } from 'src/resources/services/session.service';
     CompanyApplication,
     ContractApplication,
     PdvApplication,
+    OrderApplication,
   ],
 })
 export class ApplicationModule {}

@@ -141,6 +141,29 @@ export class CompanyController {
     return listCompanyDto;
   }
 
+  @Get('order/:orderId')
+  async findByOrder(
+    @Param('orderId') orderId: string,
+  ): Promise<ListCompanyDto> {
+    const company: Company = await this.companyApplication.findByOrder(orderId);
+    if (!company) {
+      throw new NotFoundException('COMPANY_NOT_FOUND');
+    }
+    const listCompanyDto: ListCompanyDto = new ListCompanyDto(
+      company.stringId,
+      company.name,
+      company.socialName,
+      company.revanueRecord,
+      company.phone,
+      company.paymentMethod,
+      company.mainContact,
+      company.email,
+      company.address,
+      company.isActive,
+    );
+    return listCompanyDto;
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ListCompanyDto> {
     const company: Company = await this.companyApplication.findOne(id);

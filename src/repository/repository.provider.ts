@@ -3,4 +3,5 @@ export enum RepositoryProvider {
   COMPANY = 'CompanyRepository',
   CONTRACT = 'ContractRepository',
   PDV = 'PdvRepository',
+  ORDER = 'OrderRepository',
 }

@@ -68,7 +68,7 @@ export class PdvApplication {
     if (filterPdvDto.serialNumber) {
       where = {
         ...where,
-        name: { [Op.like]: `%${filterPdvDto.serialNumber}%` },
+        serialNumber: { [Op.like]: `%${filterPdvDto.serialNumber}%` },
       };
     }
 

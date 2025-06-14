@@ -41,6 +41,20 @@ export class ContractApplication {
     return contracts;
   }
 
+  async findByCompany(companyId: string): Promise<Array<Contract>> {
+    const company: Company = await this.companyDomain.findByStringId(companyId);
+    if (!company) {
+      throw new NotFoundException('COMPANY_NOT_FOUND');
+    }
+    console.log('companyId');
+    console.log(company.id);
+    const contracts: Array<Contract> = await this.contractDomain.findAll({
+      companyId: company.id,
+      isCurrent: true,
+    });
+    return contracts;
+  }
+
   async findOne(id: string): Promise<Contract> {
     const contract: Contract = await this.contractDomain.findByStringId(id);
     if (!contract) {
@@ -66,6 +80,15 @@ export class ContractApplication {
     if (filterContractDto.provider) {
       where = { ...where, provider: filterContractDto.provider };
     }
+
+    if (filterContractDto.paymentIntervalDay) {
+      where = {
+        ...where,
+        paymentIntervalDay: filterContractDto.paymentIntervalDay,
+      };
+    }
+
+    console.log(where);
 
     return this.contractDomain.findPaginated(
       where,

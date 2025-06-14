@@ -121,6 +121,30 @@ export class ContractController {
     return contractList;
   }
 
+  @Get('company/:companyId')
+  async findByCompany(
+    @Param('companyId') companyId: string,
+  ): Promise<Array<ListContractDto>> {
+    const contracts: Array<Contract> =
+      await this.contractApplication.findByCompany(companyId);
+    const contractList: Array<ListContractDto> = contracts.map(
+      (contract: Contract) =>
+        new ListContractDto(
+          contract.stringId,
+          contract.provider,
+          contract.rentValue,
+          contract.debitTax,
+          contract.pixTax,
+          contract.creditTax,
+          contract.creditLowTax,
+          contract.creditHighTax,
+          contract.paymentIntervalDay,
+          contract.companyId,
+        ),
+    );
+    return contractList;
+  }
+
   @Patch(':id')
   @UseGuards(RoleGuard)
   async update(
