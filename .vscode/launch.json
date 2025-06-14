@@ -2,24 +2,28 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "name": "NestJS (built)",
+      "type": "pwa-node",
       "request": "launch",
-      "name": "Launch NestJS API",
-      "program": "${workspaceFolder}/src/main.ts",
+      "program": "${workspaceFolder}/dist/main.js",
       "preLaunchTask": "npm: build",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "sourceMaps": true,
+      "cwd": "${workspaceFolder}",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ],
       "env": {
         "NODE_ENV": "development"
-      }
+      },
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
     },
     {
-      "type": "node",
-      "request": "attach",
       "name": "Attach to Process",
+      "type": "pwa-node",
+      "request": "attach",
       "processId": "${command:PickProcess}",
-      "restart": true,
-      "protocol": "inspector"
+      "protocol": "inspector",
+      "restart": true
     }
   ]
 }
