@@ -166,7 +166,10 @@ describe('TopicDomain', () => {
       topicRepository.findAll.mockResolvedValue(subTopics);
 
       // Act
-      const result = await topicDomain.updateTopic(topicToUpdate);
+      const result = await topicDomain.updateTopic(
+        topicToUpdate,
+        topicToUpdate.id,
+      );
 
       // Assert
       expect(topicRepository.findAll).toHaveBeenCalledWith({
@@ -201,7 +204,10 @@ describe('TopicDomain', () => {
       topicRepository.findAll.mockResolvedValue([]); // No subtopics
 
       // Act
-      const result = await topicDomain.updateTopic(topicToUpdate);
+      const result = await topicDomain.updateTopic(
+        topicToUpdate,
+        topicToUpdate.id,
+      );
 
       // Assert
       expect(topicRepository.findAll).toHaveBeenCalledWith({
@@ -229,9 +235,9 @@ describe('TopicDomain', () => {
       topicRepository.create.mockRejectedValue(new Error('Database error'));
 
       // Act & Assert
-      await expect(topicDomain.updateTopic(topicToUpdate)).rejects.toThrow(
-        'Database error',
-      );
+      await expect(
+        topicDomain.updateTopic(topicToUpdate, topicToUpdate.id),
+      ).rejects.toThrow('Database error');
     });
 
     it('should handle errors when finding subtopics', async () => {
@@ -251,9 +257,9 @@ describe('TopicDomain', () => {
       topicRepository.findAll.mockRejectedValue(new Error('Database error'));
 
       // Act & Assert
-      await expect(topicDomain.updateTopic(topicToUpdate)).rejects.toThrow(
-        'Database error',
-      );
+      await expect(
+        topicDomain.updateTopic(topicToUpdate, topicToUpdate.id),
+      ).rejects.toThrow('Database error');
     });
   });
 

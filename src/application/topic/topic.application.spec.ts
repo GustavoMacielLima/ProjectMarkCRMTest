@@ -60,6 +60,7 @@ describe('TopicApplication', () => {
       findAll: jest.fn(),
       findByPk: jest.fn(),
       update: jest.fn(),
+      updateTopic: jest.fn(),
       remove: jest.fn(),
     };
 
@@ -221,16 +222,20 @@ describe('TopicApplication', () => {
       const topicId = 1;
       const updatedTopic = { ...mockTopic, ...mockUpdateTopicDto };
       topicDomain.findByPk.mockResolvedValue(mockTopic);
-      topicDomain.update.mockResolvedValue(updatedTopic as any);
+      topicDomain.updateTopic.mockResolvedValue(updatedTopic as any);
 
       // Act
       const result = await topicApplication.update(topicId, mockUpdateTopicDto);
 
       // Assert
       expect(topicDomain.findByPk).toHaveBeenCalledWith(topicId);
-      expect(topicDomain.update).toHaveBeenCalledWith(
-        mockTopic.id,
-        updatedTopic,
+      expect(topicDomain.updateTopic).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: mockUpdateTopicDto.name,
+          content: mockUpdateTopicDto.content,
+          version: mockTopic.version,
+        }),
+        topicId,
       );
       expect(result).toEqual(updatedTopic);
     });
@@ -253,9 +258,7 @@ describe('TopicApplication', () => {
       // Arrange
       const topicId = 1;
       topicDomain.findByPk.mockResolvedValue(mockTopic);
-      topicDomain.update.mockImplementation(() => {
-        throw new Error('Update error');
-      });
+      topicDomain.updateTopic.mockRejectedValue(new Error('Update error'));
 
       // Act & Assert
       await expect(
@@ -353,7 +356,7 @@ describe('TopicApplication', () => {
       const topicId = 1;
       const updatedTopic = { ...mockTopic, ...mockUpdateTopicDto };
       topicDomain.findByPk.mockResolvedValue(mockTopic);
-      topicDomain.update.mockResolvedValue(updatedTopic as any);
+      topicDomain.updateTopic.mockResolvedValue(updatedTopic as any);
 
       // Act
       const result = await topicApplication.update(topicId, mockUpdateTopicDto);

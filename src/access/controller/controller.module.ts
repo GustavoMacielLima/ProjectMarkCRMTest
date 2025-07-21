@@ -35,8 +35,6 @@ import { TopicController } from './topic/topic.controller';
 export class ControllerModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     // Configure middleware if needed
-    consumer
-      .apply()
-      .forRoutes(UserController, ResourceController, TopicController);
+    consumer.apply().forRoutes(ResourceController, TopicController);
   }
 }

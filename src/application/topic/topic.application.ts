@@ -19,6 +19,20 @@ export class TopicApplication {
     return createdTopic;
   }
 
+  async createSubTopic(
+    id: number,
+    createTopicDto: CreateTopicDto,
+  ): Promise<Topic> {
+    const newTopic: Topic = new Topic();
+
+    Object.assign(newTopic, createTopicDto);
+    newTopic.version = 1;
+    newTopic.parentTopicId = id;
+    const createdTopic: Topic = await this.topicDomain.createNewTopic(newTopic);
+
+    return createdTopic;
+  }
+
   async findAll(): Promise<Array<Topic>> {
     const topics: Array<Topic> = await this.topicDomain.findAll();
     return topics;
@@ -86,13 +100,21 @@ export class TopicApplication {
 
   async update(id: number, updateTopicDto: UpdateTopicDto): Promise<Topic> {
     const topic = await this.findOne(id);
-    Object.assign(topic, updateTopicDto);
-    this.topicDomain.update(topic.id, topic);
-    return topic;
+    const newTopic = new Topic();
+    newTopic.version = topic.version;
+    newTopic.name = topic.name;
+    newTopic.content = topic.content;
+    newTopic.parentTopicId = topic.parentTopicId;
+    Object.assign(newTopic, updateTopicDto);
+    const updatedTopic: Topic = await this.topicDomain.updateTopic(
+      newTopic,
+      topic.id,
+    );
+    return updatedTopic;
   }
 
   async remove(id: number) {
     const topic: Topic = await this.findOne(id);
-    this.topicDomain.remove(topic.id);
+    await this.topicDomain.remove(topic.id);
   }
 }

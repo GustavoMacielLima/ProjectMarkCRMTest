@@ -46,6 +46,30 @@ export class TopicController {
     return topic;
   }
 
+  @Post(':id/subtopic')
+  @UseGuards(RoleGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
+  async createSubTopic(
+    @Param('id') id: number,
+    @Body() createTopicDto: CreateTopicDto,
+  ): Promise<ListTopicDto> {
+    const newTopic: Topic = await this.topicApplication.createSubTopic(
+      id,
+      createTopicDto,
+    );
+    if (!newTopic) {
+      throw new Error('TOPIC_NOT_CREATED');
+    }
+    const topic: ListTopicDto = new ListTopicDto(
+      newTopic.id,
+      newTopic.name,
+      newTopic.content,
+      newTopic.parentTopicId,
+      [],
+    );
+    return topic;
+  }
+
   @Get()
   @UseGuards(RoleGuard)
   @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.VIEWER)

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { UserApplication } from 'src/application/user/user.application';
 import { User } from 'src/models/user.model';
-import { AuthGuard, RequestUser } from 'src/modules/auth/auth.guard';
+import { RequestUser } from 'src/modules/auth/auth.guard';
 import { RoleGuard } from 'src/modules/auth/role.guard';
 import { Roles } from 'src/modules/auth/roles.decorator';
 import { UserRole } from 'src/models/user.model';
@@ -22,7 +22,6 @@ import { ListUserDto } from 'src/modules/user/dto/list-user.dto';
 import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
 
 @Controller('user')
-@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userApplication: UserApplication) {}
 
