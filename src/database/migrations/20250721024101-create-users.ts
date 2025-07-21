@@ -1,34 +1,24 @@
 'use strict';
 
-import { ResourceType } from 'src/models/resource.model';
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Resources', {
+    await queryInterface.createTable('Users', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      topicId: {
-        type: Sequelize.INTEGER,
+      name: {
+        type: Sequelize.STRING(255),
         allowNull: false,
-        references: {
-          model: 'Topics',
-          key: 'id',
-        },
       },
-      url: {
-        type: Sequelize.LONGTEXT,
-        allowNull: true,
+      email: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
       },
-      description: {
-        type: Sequelize.LONGTEXT,
-        allowNull: true,
-      },
-      type: {
-        type: Sequelize.ENUM(...Object.values(ResourceType)),
+      role: {
+        type: Sequelize.ENUM('admin', 'editor', 'viewer'),
         allowNull: false,
       },
       createdAt: {
@@ -50,6 +40,6 @@ module.exports = {
 
   async down(queryInterface) {
     // Certifique-se de usar o mesmo nome da tabela no método up
-    await queryInterface.dropTable('Resources');
+    await queryInterface.dropTable('Users');
   },
 };

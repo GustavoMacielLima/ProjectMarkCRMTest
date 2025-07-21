@@ -3,31 +3,31 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Topics', {
+    await queryInterface.createTable('Resources', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-      },
-      content: {
-        type: Sequelize.LONGTEXT,
-        allowNull: false,
-      },
-      version: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-      },
-      phone: {
-        type: Sequelize.STRING(11),
-        allowNull: true,
-      },
-      parentTopicId: {
+      topicId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Topics',
+          key: 'id',
+        },
+      },
+      url: {
+        type: Sequelize.TEXT,
         allowNull: true,
+      },
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      type: {
+        type: Sequelize.ENUM('video', 'article', 'pdf'),
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE, // Usar Sequelize.DATE para timestamps
@@ -48,6 +48,6 @@ module.exports = {
 
   async down(queryInterface) {
     // Certifique-se de usar o mesmo nome da tabela no método up
-    await queryInterface.dropTable('Topics');
+    await queryInterface.dropTable('Resources');
   },
 };

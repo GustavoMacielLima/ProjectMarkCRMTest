@@ -1,11 +1,9 @@
 'use strict';
 
-import { UserRole } from 'src/models/user.model';
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Topics', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -15,13 +13,21 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: false,
       },
-      email: {
+      content: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      version: {
         type: Sequelize.STRING(255),
         allowNull: false,
       },
-      role: {
-        type: Sequelize.ENUM(...Object.values(UserRole)),
-        allowNull: false,
+      phone: {
+        type: Sequelize.STRING(11),
+        allowNull: true,
+      },
+      parentTopicId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE, // Usar Sequelize.DATE para timestamps
@@ -42,6 +48,6 @@ module.exports = {
 
   async down(queryInterface) {
     // Certifique-se de usar o mesmo nome da tabela no método up
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Topics');
   },
 };
