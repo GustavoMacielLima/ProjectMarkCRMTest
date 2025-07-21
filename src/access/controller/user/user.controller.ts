@@ -12,14 +12,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserApplication } from 'src/application/user/user.application';
-import { Pagination } from 'src/domain/base.domain';
 import { User } from 'src/models/user.model';
 import { AuthGuard, RequestUser } from 'src/modules/auth/auth.guard';
+import { RoleGuard } from 'src/modules/auth/role.guard';
+import { Roles } from 'src/modules/auth/roles.decorator';
+import { UserRole } from 'src/models/user.model';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
-import { FilterUserDto } from 'src/modules/user/dto/filter-user.dto';
 import { ListUserDto } from 'src/modules/user/dto/list-user.dto';
 import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
-import { PasswordHash } from 'src/resources/pipes/password-hash.pipe';
 
 @Controller('user')
 @UseGuards(AuthGuard)
@@ -27,117 +27,56 @@ export class UserController {
   constructor(private readonly userApplication: UserApplication) {}
 
   @Post()
-  async create(
-    @Body() createUserDto: CreateUserDto,
-    @Body('password', PasswordHash) passwordHash: string,
-  ): Promise<ListUserDto> {
-    createUserDto.password = passwordHash;
+  async create(@Body() createUserDto: CreateUserDto): Promise<ListUserDto> {
     const newUser: User = await this.userApplication.create(createUserDto);
     return new ListUserDto(
-      newUser.stringId,
-      newUser.fullName,
+      newUser.id,
+      newUser.name,
       newUser.email,
-      newUser.phone,
       newUser.role,
-      newUser.isActive,
-      newUser.identifier,
     );
-  }
-
-  @Post('list')
-  async paginatedList(
-    @Body() filterUserDto: FilterUserDto,
-  ): Promise<{ data: ListUserDto[]; pagination: Pagination }> {
-    const companies: { data: User[]; pagination: Pagination } =
-      await this.userApplication.findPaginated(filterUserDto);
-    const listUserDto: ListUserDto[] = companies.data.map(
-      (user) =>
-        new ListUserDto(
-          user.stringId,
-          user.fullName,
-          user.email,
-          user.phone,
-          user.role,
-          user.isActive,
-          user.identifier,
-        ),
-    );
-
-    return {
-      data: listUserDto,
-      pagination: companies.pagination,
-    };
   }
 
   @Get()
+  @UseGuards(RoleGuard)
+  @Roles(UserRole.ADMIN)
   async findAll(): Promise<ListUserDto[]> {
     const users: User[] = await this.userApplication.findAll();
     return users.map(
-      (user) =>
-        new ListUserDto(
-          user.stringId,
-          user.fullName,
-          user.email,
-          user.phone,
-          user.role,
-          user.isActive,
-          user.identifier,
-        ),
+      (user) => new ListUserDto(user.id, user.name, user.email, user.role),
     );
   }
 
   @Get('myself')
+  @UseGuards(RoleGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.VIEWER)
   async myself(@Req() requestUser: RequestUser): Promise<ListUserDto> {
-    const user: User = await this.userApplication.findOne(requestUser.user.sub);
-    return new ListUserDto(
-      user.stringId,
-      user.fullName,
-      user.email,
-      user.phone,
-      user.role,
-      user.isActive,
-      user.identifier,
-    );
+    const user: User = await this.userApplication.findOne(requestUser.user.id);
+    return new ListUserDto(user.id, user.name, user.email, user.role);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ListUserDto> {
+  async findOne(@Param('id') id: number): Promise<ListUserDto> {
     const user: User = await this.userApplication.findOne(id);
-    return new ListUserDto(
-      user.stringId,
-      user.fullName,
-      user.email,
-      user.phone,
-      user.role,
-      user.isActive,
-      user.identifier,
-    );
+    return new ListUserDto(user.id, user.name, user.email, user.role);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
     @Req() requestUser: RequestUser,
   ): Promise<ListUserDto> {
     const user: User = await this.userApplication.update(
-      requestUser.user.sub,
+      requestUser.user.id,
       updateUserDto,
     );
-    return new ListUserDto(
-      user.stringId,
-      user.fullName,
-      user.email,
-      user.phone,
-      user.role,
-      user.isActive,
-      user.identifier,
-    );
+    return new ListUserDto(user.id, user.name, user.email, user.role);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id') id: number): Promise<void> {
     await this.userApplication.remove(id);
     return;
   }

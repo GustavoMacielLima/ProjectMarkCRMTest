@@ -10,7 +10,7 @@ module.exports = {
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USERNAME || 'root',
     password: process.env.DB_PASSWORD || 'password',
-    database: process.env.DB_NAME || 'mgpix',
+    database: process.env.DB_NAME || 'crm',
     define: {
       charset: 'utf8',
       collate: 'utf8_general_ci',
@@ -22,7 +22,7 @@ module.exports = {
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USERNAME || 'root',
     password: process.env.DB_PASSWORD || 'password',
-    database: process.env.DB_NAME || 'mgpix_test',
+    database: process.env.DB_NAME || 'crm_test',
     define: {
       charset: 'utf8',
       collate: 'utf8_general_ci',

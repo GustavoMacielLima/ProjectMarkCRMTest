@@ -1,6 +1,6 @@
 FROM node:22.14.0 as build
 
-WORKDIR /mgpix-api
+WORKDIR /crm-api
 
 COPY package*.json ./
 
@@ -24,8 +24,8 @@ RUN apk add --no-cache tzdata && \
   echo "America/Sao_Paulo" > /etc/timezone && \
   apk del tzdata
 
-COPY --from=build /mgpix-api/dist/ /app/dist/
-COPY --from=build /mgpix-api/node_modules/ /app/node_modules/
+COPY --from=build /crm-api/dist/ /app/dist/
+COPY --from=build /crm-api/node_modules/ /app/node_modules/
 
 WORKDIR /app/dist
 

@@ -6,10 +6,8 @@ import { DomainModule } from 'src/domain/domain.module';
 import { AuthController } from './auth/auth.controller';
 import { UserController } from './user/user.controller';
 import { SessionService } from 'src/resources/services/session.service';
-import { PdvController } from './pdv/pdv.controller';
-import { ContractController } from './contract/contract.controller';
-import { CompanyController } from './company/company.controller';
-import { OrderController } from './order/order.controller';
+import { ResourceController } from './resource/resource.controller';
+import { TopicController } from './topic/topic.controller';
 
 @Module({
   imports: [
@@ -30,10 +28,8 @@ import { OrderController } from './order/order.controller';
   controllers: [
     AuthController,
     UserController,
-    PdvController,
-    ContractController,
-    CompanyController,
-    OrderController,
+    ResourceController,
+    TopicController,
   ],
 })
 export class ControllerModule implements NestModule {
@@ -41,12 +37,6 @@ export class ControllerModule implements NestModule {
     // Configure middleware if needed
     consumer
       .apply()
-      .forRoutes(
-        UserController,
-        PdvController,
-        ContractController,
-        CompanyController,
-        OrderController,
-      );
+      .forRoutes(UserController, ResourceController, TopicController);
   }
 }

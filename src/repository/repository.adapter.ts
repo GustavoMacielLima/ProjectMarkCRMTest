@@ -1,9 +1,7 @@
 import { User } from 'src/models/user.model';
 import { RepositoryProvider } from './repository.provider';
-import { Company } from 'src/models/company.model';
-import { Contract } from 'src/models/contract.model';
-import { Pdv } from 'src/models/pdv.model';
-import { Order } from 'src/models/order.model';
+import { Topic } from 'src/models/topic.model';
+import { Resource } from 'src/models/resource.model';
 export const RepositoryAdapter = {
   useFactory: () => [
     {
@@ -11,22 +9,14 @@ export const RepositoryAdapter = {
       useValue: User,
     },
     {
-      provide: RepositoryProvider.COMPANY,
-      useValue: Company,
+      provide: RepositoryProvider.TOPIC,
+      useValue: Topic,
     },
     {
-      provide: RepositoryProvider.CONTRACT,
-      useValue: Contract,
-    },
-    {
-      provide: RepositoryProvider.PDV,
-      useValue: Pdv,
-    },
-    {
-      provide: RepositoryProvider.ORDER,
-      useValue: Order,
+      provide: RepositoryProvider.RESOURCE,
+      useValue: Resource,
     },
   ],
 };
 
-export const RepositoryModels: any[] = [User, Company, Contract, Pdv, Order];
+export const RepositoryModels: any[] = [User, Topic, Resource];

@@ -28,7 +28,7 @@ export class GlobalLoggerInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(() => {
         if ('user' in request) {
-          this.logger.log(`Route visited by uid ${request.user.sub}`);
+          this.logger.log(`Route visited by uid ${request.user.id}`);
         }
 
         const routeTimeExecution = Date.now() - preControllerInstant;

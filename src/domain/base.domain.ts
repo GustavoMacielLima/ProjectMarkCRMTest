@@ -1,7 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { WhereOptions } from 'sequelize';
 import { Model, Repository } from 'sequelize-typescript';
-import { User, UserRole } from 'src/models/user.model';
 import { SessionService } from 'src/resources/services/session.service';
 import { v4 as uuid } from 'uuid';
 
@@ -12,15 +11,6 @@ export class BaseDomain<T extends Model> {
   ) {}
 
   private setConstraints(record: T, isNewRecord: boolean): void {
-    const loggedUser: User = this.sessionService.getUser();
-    if (
-      loggedUser &&
-      loggedUser.role !== UserRole.ADMIN &&
-      'companyId' in this.repository
-    ) {
-      record.setDataValue('companyId', loggedUser.companyId);
-    }
-
     record.setDataValue('updatedAt', new Date());
     if (isNewRecord) {
       record.setDataValue('stringId', uuid());
@@ -32,15 +22,6 @@ export class BaseDomain<T extends Model> {
     whereOptions: WhereOptions = {},
     withTrashed: boolean = false,
   ): void {
-    const loggedUser: User = this.sessionService.getUser();
-    if (
-      loggedUser &&
-      loggedUser.role !== UserRole.ADMIN &&
-      'companyId' in this.repository
-    ) {
-      whereOptions['companyId'] = loggedUser.companyId;
-    }
-
     if (!withTrashed) {
       whereOptions['deletedAt'] = null;
     }

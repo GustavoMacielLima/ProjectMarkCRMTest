@@ -21,7 +21,7 @@ export class EmailService {
 
   async sendVerificationEmail(to: string, code: string): Promise<void> {
     const mailOptions = {
-      from: '"MgPix" <no-reply@mgpix.com.br>', // Substitua pelo remetente
+      from: '"crm" <no-reply@crm.com.br>', // Substitua pelo remetente
       to,
       subject: 'Código de Verificação',
       text: `Seu código de verificação é: ${code}`,
@@ -111,8 +111,8 @@ const emailHtml: string = `
   <body>
     <div class="container">
       <img
-        src="https://codigomgpix.my.canva.site/_assets/media/738c65f1546f8f7e0567a046879cca1e.png"
-        alt="MGPix"
+        src="https://codigocrm.my.canva.site/_assets/media/738c65f1546f8f7e0567a046879cca1e.png"
+        alt="crm"
         class="logo"
       />
       <h1>Código de verificação</h1>
