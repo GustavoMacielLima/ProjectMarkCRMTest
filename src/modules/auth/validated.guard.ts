@@ -13,7 +13,7 @@ export class ValidatedGuard implements CanActivate {
   constructor(private readonly sessionService: SessionService) {}
   async canActivate(): Promise<boolean> {
     const user: User = this.sessionService.getUser();
-    if (!user.isActive) {
+    if (!user || user.deletedAt) {
       throw new UnauthorizedException('USER_NOT_VALIDATED');
     }
     return true;

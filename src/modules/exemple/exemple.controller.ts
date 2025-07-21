@@ -8,7 +8,6 @@ import {
   Delete,
   UseInterceptors,
   Inject,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ExempleService } from './exemple.service';
@@ -16,7 +15,7 @@ import { CreateExempleDto } from './dto/create-exemple.dto';
 import { UpdateExempleDto } from './dto/update-exemple.dto';
 import { CACHE_MANAGER, CacheInterceptor } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { AuthGuard, RequestUser } from '../auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 //import { PasswordHash } from 'src/resources/pipes/password-hash.pipe';
 
 @Controller('exemple')
@@ -37,19 +36,6 @@ export class ExempleController {
 
   @Get()
   findAll() {
-    // Cache exemple only json return
-    /* const produtoCache = await this.cacheManager.get<ProdutoEntity>(
-      `produto-${id}`,
-    );
-
-    if (!produtoCache) {
-      const produto = await this.produtoService.listaProdutoPorId(id);
-
-      await this.cacheManager.set(`produto-${id}`, produto);
-      return { message: 'Produto Listado', data: produto };
-    }
-
-    return { message: 'Produto Listado', data: produtoCache }; */
     return this.exempleService.findAll();
   }
 
@@ -60,12 +46,7 @@ export class ExempleController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateExempleDto: UpdateExempleDto,
-    @Req() req: RequestUser, //Exemple to use logged user
-  ) {
-    console.log(req.user.sub);
+  update(@Param('id') id: string, @Body() updateExempleDto: UpdateExempleDto) {
     return this.exempleService.update(+id, updateExempleDto);
   }
 
